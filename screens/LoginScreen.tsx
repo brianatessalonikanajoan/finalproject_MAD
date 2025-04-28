@@ -62,6 +62,9 @@ const LoginScreen = () => {
       <TouchableOpacity style={styles.signInButton} onPress={handleLogin}>
         <Text style={styles.signInText}>Sign In</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.signInButton} onPress={handleLogin}>
+        <Text style={styles.signInText}>Register</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity style={styles.googleButton}>
         <Image
