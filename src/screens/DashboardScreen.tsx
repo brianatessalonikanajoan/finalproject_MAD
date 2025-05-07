@@ -5,8 +5,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../src/navigation/types';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { RootStackParamList } from '../navigation/types';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import { BarChart } from 'react-native-chart-kit';
 
 
@@ -34,7 +34,7 @@ const DashboardScreen = () => {
       <Text style={styles.sectionTitle}>Today’s Habit</Text>
       {['Habit #1','Habit #2','Habit #3'].map((h,i)=>(
         <View key={i} style={styles.habitRow}>
-          <Icon name="circle-o" size={20} color="#2D2D2D" />
+          <Icon name="circle" solid size={20} color="#2D2D2D" />
           <Text style={styles.habitText}>{h}</Text>
         </View>
       ))}
@@ -72,16 +72,16 @@ const DashboardScreen = () => {
       {}
       <View style={styles.navBar}>
         <TouchableOpacity onPress={() => navigation.navigate('Dashboard')}>
-          <Icon name="home" size={26} color="#7165FF" />
+        <Icon name="home" solid size={26} color="#7165FF" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('HabitTracker')}>
-          <Icon name="check-square" size={26} color="#2D2D2D" />
+        <TouchableOpacity onPress={() => navigation.navigate('InputHabit')}>
+        <Icon name="check-square" solid size={26} color="#2D2D2D" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('SleepTracker')}>
-          <Icon name="moon-o" size={26} color="#2D2D2D" />
+        <TouchableOpacity onPress={() => navigation.navigate('InputSleep')}>
+        <Icon name="moon" solid size={26} color="#2D2D2D" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
-          <Icon name="user" size={26} color="#2D2D2D" />
+        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+        <Icon name="user" solid size={26} color="#2D2D2D" />
         </TouchableOpacity>
       </View>
     </ScrollView>

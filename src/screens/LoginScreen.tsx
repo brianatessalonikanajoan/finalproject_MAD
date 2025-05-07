@@ -1,38 +1,35 @@
-
 import React, { useState } from 'react';
-import { 
-  SafeAreaView, View, Text, TextInput, TouchableOpacity, 
-  StyleSheet, Image 
+import {
+  SafeAreaView, Text, TextInput, TouchableOpacity,
+  StyleSheet, Image, Alert
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../src/navigation/types';
-
+import { RootStackParamList } from '../navigation/types';
+import { auth } from '../firebaseConfig';
 
 type LoginScreenNavProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 const LoginScreen = () => {
-
   const navigation = useNavigation<LoginScreenNavProp>();
-
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [emailError, setEmailError]       = useState('');
-  const [passwordError, setPasswordError] = useState('');
 
-  const handleLogin = () => {
-    let isValid = true;
-    if (!email.trim()) {
-      setEmailError('Email is required');
-      isValid = false;
-    } else setEmailError('');
-    if (!password.trim()) {
-      setPasswordError('Password is required');
-      isValid = false;
-    } else setPasswordError('');
-
-    if (isValid) {
+  const handleLogin = async () => {
+    if (!username || !password) {
+      Alert.alert('Error', 'Isi semua field');
+      return;
+    }
+    try {
+      const email = `${username}@example.com`;
+      await auth().signInWithEmailAndPassword(email, password);
       navigation.navigate('Dashboard');
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert('Login Gagal', error.message);
+      } else {
+        Alert.alert('Login Gagal', 'Terjadi kesalahan tidak terduga');
+      }
     }
   };
 
@@ -40,14 +37,13 @@ const LoginScreen = () => {
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>SIGN IN</Text>
 
-      <Text style={styles.label}>Email</Text>
+      <Text style={styles.label}>Username</Text>
       <TextInput
         style={styles.input}
-        placeholder="Enter your email"
-        value={email}
-        onChangeText={setEmail}
+        placeholder="Enter your username"
+        value={username}
+        onChangeText={setUsername}
       />
-      {!!emailError && <Text style={styles.errorText}>{emailError}</Text>}
 
       <Text style={styles.label}>Password</Text>
       <TextInput
@@ -57,21 +53,14 @@ const LoginScreen = () => {
         value={password}
         onChangeText={setPassword}
       />
-      {!!passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
 
-      <TouchableOpacity style={styles.signInButton} onPress={handleLogin}>
-        <Text style={styles.signInText}>Sign In</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.signInButton} onPress={handleLogin}>
-        <Text style={styles.signInText}>Register</Text>
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.googleButton}>
-        <Image
-          source={require('../assets/google.png')}
-          style={styles.googleIcon}
-        />
-        <Text style={styles.googleText}>Sign In with Google</Text>
+        <Image source={require('../../assets/google.png')} style={styles.googleIcon} />
+        <Text style={styles.googleText}>Continue with Google</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -96,7 +85,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: '#333',
+    color: '#33',
     marginBottom: 6,
   },
   input: {
@@ -106,22 +95,16 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 12,
     backgroundColor: '#fff',
+    marginBottom: 10,
   },
-  errorText: {
-    color: 'red',
-    fontSize: 12,
-    marginTop: 4,
-    marginBottom: 8,
-  },
-  signInButton: {
+  button: {
     backgroundColor: '#7165FF',
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 12,
+    marginTop: 12,
   },
-  signInText: {
+  buttonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
@@ -134,6 +117,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 12,
     justifyContent: 'center',
+    marginTop: 14,
   },
   googleIcon: {
     width: 20,
@@ -145,5 +129,4 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#333',
   },
-  
 });

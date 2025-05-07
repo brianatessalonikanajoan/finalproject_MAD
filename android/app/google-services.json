@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "977316858153",
+    "project_id": "mad2025-699cc",
+    "storage_bucket": "mad2025-699cc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977316858153:android:1b10df9797a3d214f34f38",
+        "android_client_info": {
+          "package_name": "com.dayline"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrURQLCNibpqGnIS09WjI0s0T9cMlZ3X0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
