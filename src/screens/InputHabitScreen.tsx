@@ -19,9 +19,19 @@ import { Picker } from '@react-native-picker/picker';
 
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'InputHabit'>;
 
+type Habit = {
+  id: string;
+  name: string;
+  detail: string;
+  frequency: '1 Day' | '7 Day' | '30 Day';
+  alarmOn: boolean;
+  alarmTime: Date;
+};
+
+const frequencies: Habit['frequency'][] = ['1 Day', '7 Day', '30 Day'];
+
 const renderHabit = ({ item }: { item: Habit }) => (
   <View style={styles.habitRow}>
-    <Image source={require('../../assets/circle.png')} style={styles.icon} />
     <View style={styles.habitTextContainer}>
       <Text style={styles.habitTitle}>{item.name}</Text>
       {item.detail.length > 0 && (
@@ -35,23 +45,11 @@ const renderHabit = ({ item }: { item: Habit }) => (
   </View>
 );
 
-type Habit = {
-  id: string;
-  name: string;
-  detail: string;
-  frequency: '1 Day' | '7 Day' | '30 Day';
-  alarmOn: boolean;
-  alarmTime: Date;
-};
-
-const frequencies: Habit['frequency'][] = ['1 Day', '7 Day', '30 Day'];
-
 const InputHabitScreen: React.FC = () => {
   const navigation = useNavigation<NavProp>();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
 
-  // form fields
   const [name, setName] = useState('');
   const [detail, setDetail] = useState('');
   const [frequency, setFrequency] = useState<Habit['frequency']>('1 Day');
@@ -69,7 +67,6 @@ const InputHabitScreen: React.FC = () => {
       alarmTime,
     };
     setHabits(prev => [...prev, newHabit]);
-    // reset & close
     setName('');
     setDetail('');
     setFrequency('1 Day');
@@ -84,9 +81,7 @@ const InputHabitScreen: React.FC = () => {
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Image source={require('../../assets/left.png')} style={styles.icon} />
       </TouchableOpacity>
-      <Text style={styles.header}>
-        <Image source={require('../../assets/circle.png')} style={styles.icon} /> HABIT TRACKER
-      </Text>
+      <Text style={styles.header}>HABIT TRACKER</Text>
 
       <FlatList
         data={habits}
@@ -94,9 +89,7 @@ const InputHabitScreen: React.FC = () => {
         renderItem={renderHabit}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         ListEmptyComponent={
-          <Text style={styles.emptyText}>
-            Belum ada habit, tekan + untuk menambah.
-          </Text>
+          <Text style={styles.emptyText}>Belum ada habit, tekan + untuk menambah.</Text>
         }
       />
 
@@ -184,7 +177,6 @@ const InputHabitScreen: React.FC = () => {
         </View>
       </Modal>
 
-      {/* Bottom NavBar with images */}
       <View style={styles.navBar}>
         <TouchableOpacity onPress={() => navigation.navigate('Dashboard')}>
           <Image source={require('../../assets/home.png')} style={styles.icon} />
@@ -213,6 +205,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F7F8FC',
     padding: 16,
+    paddingBottom: 80,
   },
   header: {
     fontSize: 24,
@@ -319,12 +312,16 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   navBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     justifyContent: 'space-around',
+    backgroundColor: '#FFF',
     paddingVertical: 12,
     borderTopWidth: 1,
     borderColor: '#999',
-    marginTop: 20,
   },
   icon: {
     width: 30,
@@ -332,4 +329,3 @@ const styles = StyleSheet.create({
     tintColor: '#2D2D2D',
   },
 });
-

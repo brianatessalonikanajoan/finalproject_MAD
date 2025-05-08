@@ -26,7 +26,6 @@ const InputSleepScreen = () => {
       <Text style={styles.title}>SLEEP TRACKER</Text>
 
       <View style={styles.card}>
-        <Text style={styles.iconText}>😴</Text>
         <Text style={styles.label}>Jam Tidur</Text>
         <Picker
           selectedValue={sleepTime}
