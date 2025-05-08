@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   SafeAreaView, Text, TextInput, TouchableOpacity,
-  StyleSheet, Image, Alert
+  StyleSheet, Alert
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -12,16 +12,15 @@ type LoginScreenNavProp = NativeStackNavigationProp<RootStackParamList, 'Login'>
 
 const LoginScreen = () => {
   const navigation = useNavigation<LoginScreenNavProp>();
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-    if (!username || !password) {
+    if (!email || !password) {
       Alert.alert('Error', 'Isi semua field');
       return;
     }
     try {
-      const email = `${username}@example.com`;
       await auth().signInWithEmailAndPassword(email, password);
       navigation.navigate('Dashboard');
     } catch (error) {
@@ -33,16 +32,22 @@ const LoginScreen = () => {
     }
   };
 
+  const handleRegister = () => {
+    navigation.navigate('Register');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>SIGN IN</Text>
 
-      <Text style={styles.label}>Username</Text>
+      <Text style={styles.label}>Email</Text>
       <TextInput
         style={styles.input}
-        placeholder="Enter your username"
-        value={username}
-        onChangeText={setUsername}
+        placeholder="Enter your email"
+        keyboardType="email-address"
+        autoCapitalize="none"
+        value={email}
+        onChangeText={setEmail}
       />
 
       <Text style={styles.label}>Password</Text>
@@ -58,9 +63,8 @@ const LoginScreen = () => {
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.googleButton}>
-        <Image source={require('../../assets/google.png')} style={styles.googleIcon} />
-        <Text style={styles.googleText}>Continue with Google</Text>
+      <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+        <Text style={styles.registerText}>Don't have an account? Register</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -109,24 +113,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  googleButton: {
-    flexDirection: 'row',
+  registerButton: {
+    marginTop: 20,
     alignItems: 'center',
-    borderColor: '#999',
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingVertical: 12,
-    justifyContent: 'center',
-    marginTop: 14,
   },
-  googleIcon: {
-    width: 20,
-    height: 20,
-    marginRight: 8,
-  },
-  googleText: {
+  registerText: {
+    color: '#7165FF',
     fontSize: 16,
     fontWeight: '500',
-    color: '#333',
   },
 });

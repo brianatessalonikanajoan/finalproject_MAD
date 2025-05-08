@@ -1,4 +1,3 @@
-// src/screens/InputHabitScreen.tsx
 import React, { useState } from 'react';
 import {
   View,
@@ -10,8 +9,8 @@ import {
   TextInput,
   Switch,
   Dimensions,
+  Image,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
@@ -21,21 +20,20 @@ import { Picker } from '@react-native-picker/picker';
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'InputHabit'>;
 
 const renderHabit = ({ item }: { item: Habit }) => (
-    <View style={styles.habitRow}>
-      <Icon name="circle-o" size={20} color="#2D2D2D" />
-      <View style={styles.habitTextContainer}>
-        <Text style={styles.habitTitle}>{item.name}</Text>
-        {item.detail.length > 0 && (
-          <Text style={styles.habitDetail}>{item.detail}</Text>
-        )}
-      </View>
-      <Icon
-        name={item.alarmOn ? 'play' : 'angle-down'}
-        size={18}
-        color="#2D2D2D"
-      />
+  <View style={styles.habitRow}>
+    <Image source={require('../../assets/circle.png')} style={styles.icon} />
+    <View style={styles.habitTextContainer}>
+      <Text style={styles.habitTitle}>{item.name}</Text>
+      {item.detail.length > 0 && (
+        <Text style={styles.habitDetail}>{item.detail}</Text>
+      )}
     </View>
-  );
+    <Image
+      source={item.alarmOn ? require('../../assets/play.png') : require('../../assets/angle-down.png')}
+      style={styles.icon}
+    />
+  </View>
+);
 
 type Habit = {
   id: string;
@@ -81,30 +79,13 @@ const InputHabitScreen: React.FC = () => {
     setModalVisible(false);
   };
 
-  const renderHabit = ({ item }: { item: Habit }) => (
-    <View style={styles.habitRow}>
-      <Icon name="circle-o" size={20} color="#2D2D2D" />
-      <View style={styles.habitTextContainer}>
-        <Text style={styles.habitTitle}>{item.name}</Text>
-        {item.detail.length > 0 && (
-          <Text style={styles.habitDetail}>{item.detail}</Text>
-        )}
-      </View>
-      <Icon
-        name={item.alarmOn ? 'play' : 'angle-down'}
-        size={18}
-        color="#2D2D2D"
-      />
-    </View>
-  );
-
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Icon name="arrow-left" size={24} color="#2D2D2D" />
-            </TouchableOpacity>
+        <Image source={require('../../assets/left.png')} style={styles.icon} />
+      </TouchableOpacity>
       <Text style={styles.header}>
-        <Icon name="circle-o" size={20} /> HABIT TRACKER
+        <Image source={require('../../assets/circle.png')} style={styles.icon} /> HABIT TRACKER
       </Text>
 
       <FlatList
@@ -123,7 +104,7 @@ const InputHabitScreen: React.FC = () => {
         style={styles.addButton}
         onPress={() => setModalVisible(true)}
       >
-        <Icon name="plus" size={20} color="#2D2D2D" />
+        <Image source={require('../../assets/plus.png')} style={styles.icon} />
       </TouchableOpacity>
 
       <Modal visible={modalVisible} transparent animationType="slide">
@@ -133,7 +114,7 @@ const InputHabitScreen: React.FC = () => {
               style={styles.closeButton}
               onPress={() => setModalVisible(false)}
             >
-              <Icon name="close" size={20} color="#333" />
+              <Image source={require('../../assets/close.png')} style={styles.icon} />
             </TouchableOpacity>
 
             <Text style={styles.modalTitle}>Add New</Text>
@@ -202,6 +183,22 @@ const InputHabitScreen: React.FC = () => {
           </View>
         </View>
       </Modal>
+
+      {/* Bottom NavBar with images */}
+      <View style={styles.navBar}>
+        <TouchableOpacity onPress={() => navigation.navigate('Dashboard')}>
+          <Image source={require('../../assets/home.png')} style={styles.icon} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('InputHabit')}>
+          <Image source={require('../../assets/check-square.png')} style={styles.icon} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('InputSleep')}>
+          <Image source={require('../../assets/moon.png')} style={styles.icon} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+          <Image source={require('../../assets/user.png')} style={styles.icon} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -321,4 +318,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: '600',
   },
+  navBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 12,
+    borderTopWidth: 1,
+    borderColor: '#999',
+    marginTop: 20,
+  },
+  icon: {
+    width: 30,
+    height: 30,
+    tintColor: '#2D2D2D',
+  },
 });
+

@@ -4,21 +4,22 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import { RootStackParamList } from './src/navigation/types';
+
 import GetStartedScreen from './src/screens/GetStartedScreen';
 import LoginScreen from './src/screens/LoginScreen';
+import RegisterScreen from './src/screens/RegisterScreen';
 import DashboardScreen from './src/screens/DashboardScreen';
 import InputHabitScreen from './src/screens/InputHabitScreen';
 import InputSleepScreen from './src/screens/InputSleepScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import StatistikScreen from './src/screens/StatistikScreen';
-import RegisterScreen from './src/screens/RegisterScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
   useEffect(() => {
     GoogleSignin.configure({
-      webClientId: 'AIzaSyBrURQLCNibpqGnIS09WjI0s0T9cMlZ3X0',
+      webClientId: '977316858153-0k8467q42r7vpej7k39u6pmpcil9ejkh.apps.googleusercontent.com',
     });
   }, []);
 

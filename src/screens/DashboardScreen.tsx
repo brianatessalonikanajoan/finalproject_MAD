@@ -1,87 +1,112 @@
-// src/screens/DashboardScreen.tsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions,
+  View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/types';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import { BarChart } from 'react-native-chart-kit';
-
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 
 type NavProp = NativeStackNavigationProp<RootStackParamList, 'Dashboard'>;
 
 const DashboardScreen = () => {
   const navigation = useNavigation<NavProp>();
-  const username = 'Alex';
+  const [username, setUsername] = useState('');
+  const [habits, setHabits] = useState<string[]>([]);
+  const [sleepData, setSleepData] = useState<number[]>([]);
 
-  const sleepData = {
-    labels: ['12','13','14','15'],
-    datasets: [
-      { data: [6, 7, 5, 7], color: () => '#7165FF' },
-      { data: [3, 6, 8, 7], color: () => '#2D2D2D' },
-    ],
-  };
+  useEffect(() => {
+    const unsubscribe = auth().onAuthStateChanged(user => {
+      if (user) {
+        const uid = user.uid;
+        setUsername(user.email ?? 'User');
+
+        // Fetch habits
+        const habitsRef = database().ref(`users/${uid}/habits`);
+        habitsRef.on('value', snapshot => {
+          const data = snapshot.val();
+          if (data) {
+            const values = Object.values(data) as string[];
+            setHabits(values);
+          } else {
+            setHabits([]);
+          }
+        });
+
+        // Fetch sleep data
+        const sleepRef = database().ref(`users/${uid}/sleep`);
+        sleepRef.on('value', snapshot => {
+          const data = snapshot.val();
+          if (data) {
+            const values = Object.values(data) as number[];
+            setSleepData(values);
+          } else {
+            setSleepData([]);
+          }
+        });
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
-      {}
       <Text style={styles.logo}>DAYLINE</Text>
       <Text style={styles.greeting}>Hi, {username}!</Text>
 
-      {}
       <Text style={styles.sectionTitle}>Today’s Habit</Text>
-      {['Habit #1','Habit #2','Habit #3'].map((h,i)=>(
+      {habits.length > 0 ? habits.map((habit, i) => (
         <View key={i} style={styles.habitRow}>
-          <Icon name="circle" solid size={20} color="#2D2D2D" />
-          <Text style={styles.habitText}>{h}</Text>
+          <Image source={require('../../assets/circle.png')} style={styles.icon} />
+          <Text style={styles.habitText}>{habit}</Text>
         </View>
-      ))}
+      )) : <Text style={{ color: '#999' }}>Belum ada data habit</Text>}
+
       <View style={styles.divider} />
 
-      {}
       <View style={styles.sleepHeader}>
         <Text style={styles.sleepLabel}>Tes: <Text style={styles.sleepValue}>-</Text></Text>
         <TouchableOpacity><Text style={styles.thisWeek}>This Week</Text></TouchableOpacity>
       </View>
 
-      {}
       <BarChart
-  data={sleepData}
-  width={Dimensions.get('window').width - 40}
-  height={220}
-  fromZero
-  showBarTops={false}
-  withInnerLines={false}
+        data={{
+          labels: sleepData.map((_, i) => `${i + 1}`),
+          datasets: [{ data: sleepData }],
+        }}
+        width={Dimensions.get('window').width - 40}
+        height={220}
+        fromZero
+        showBarTops={false}
+        withInnerLines={false}
+        yAxisLabel=""
+        yAxisSuffix=""
+        chartConfig={{
+          backgroundGradientFrom: '#F7F8FC',
+          backgroundGradientTo: '#F7F8FC',
+          decimalPlaces: 0,
+          barPercentage: 0.6,
+          color: (opacity = 1) => `rgba(33,33,33, ${opacity})`,
+          labelColor: () => '#2D2D2D',
+        }}
+        style={styles.chart}
+      />
 
-  yAxisLabel=""
-  yAxisSuffix=""
-
-  chartConfig={{
-    backgroundGradientFrom: '#F7F8FC',
-    backgroundGradientTo:   '#F7F8FC',
-    decimalPlaces: 0,
-    barPercentage: 0.6,
-    color: (opacity=1) => `rgba(33,33,33, ${opacity})`,
-    labelColor: () => '#2D2D2D',
-  }}
-  style={styles.chart}
-/>
-
-      {}
       <View style={styles.navBar}>
         <TouchableOpacity onPress={() => navigation.navigate('Dashboard')}>
-        <Icon name="home" solid size={26} color="#7165FF" />
+          <Image source={require('../../assets/home.png')} style={styles.navIcon} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('InputHabit')}>
-        <Icon name="check-square" solid size={26} color="#2D2D2D" />
+          <Image source={require('../../assets/check-square.png')} style={styles.navIcon} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('InputSleep')}>
-        <Icon name="moon" solid size={26} color="#2D2D2D" />
+          <Image source={require('../../assets/moon.png')} style={styles.navIcon} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-        <Icon name="user" solid size={26} color="#2D2D2D" />
+          <Image source={require('../../assets/user.png')} style={styles.navIcon} />
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -155,5 +180,15 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: '#999',
     marginTop: 20,
+  },
+  navIcon: {
+    width: 26,
+    height: 26,
+    resizeMode: 'contain',
+  },
+  icon: {
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
   },
 });
